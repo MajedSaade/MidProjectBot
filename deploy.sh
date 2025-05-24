@@ -98,16 +98,13 @@ echo "OLLAMA_URL: $(grep "OLLAMA_URL=" .env | cut -d= -f2)"
 # Make sure permissions are correct for .env
 chmod 600 .env
 
-# Make sure run_bot.sh is executable
-chmod +x run_bot.sh
-
 # Copy the systemd service file
 echo "Setting up systemd service..."
 sudo cp discord-bot.service /etc/systemd/system/
 
 # Test run the app directly to check for errors
 echo "Testing the app directly..."
-./run_bot.sh --test-run || {
+python -m polybot.app --test-run || {
   echo "❌ The app failed to start when run directly. This might help identify the issue."
 }
 
@@ -126,14 +123,43 @@ if ! systemctl is-active --quiet discord-bot.service; then
   sudo journalctl -u discord-bot.service -n 100 --no-pager
   
   echo ""
+  echo "Trying to run the app directly to see the exact error:"
+  cd "$(dirname "$0")"
+  source venv/bin/activate
+  python -c "import sys; print(f'Python version: {sys.version}')"
+  
+  echo "Testing .env file loading:"
+  python -c "
+from dotenv import load_dotenv
+import os
+load_dotenv()
+token = os.environ.get('DISCORD_BOT_TOKEN')
+print(f'DISCORD_BOT_TOKEN from .env: {"is set" if token else "NOT SET"}')
+print(f'Current directory: {os.getcwd()}')
+print(f'Files in current directory: {os.listdir(".")}')
+if os.path.exists(\".env\"):
+    print(f'.env file exists. Content (obfuscated):')
+    with open(\".env\", \"r\") as f:
+        for line in f:
+            if line.startswith(\"DISCORD_BOT_TOKEN=\"):
+                parts = line.strip().split(\"=\", 1)
+                if len(parts) > 1 and parts[1]:
+                    print(f'{parts[0]}=***token is set***')
+                else:
+                    print(f'{parts[0]}=***empty token***')
+            else:
+                print(line.strip())
+else:
+    print('.env file does not exist')
+"
+  
+  echo ""
   echo "The service failed to start. This might be because:"
   echo "1. The DISCORD_BOT_TOKEN is missing or invalid in the .env file"
   echo "2. The .env file is not being loaded properly by the service"
   echo "3. There are Python package dependencies missing"
   echo ""
-  echo "Try running the bot manually to see more detailed errors:"
-  echo "./run_bot.sh"
-  echo ""
+  echo "Please check the logs above for more details."
   
   exit 1
 else
