@@ -12,7 +12,6 @@ from polybot.img_proc import Img
 import json
 import asyncio
 
-"Spotify Branch"
 
 class Bot:
     def __init__(self, token):
