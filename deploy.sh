@@ -47,6 +47,13 @@ fi
 # Install dependencies
 echo "Installing dependencies..."
 pip install --upgrade pip
+
+# Install the specific required packages first to ensure they're available
+echo "Installing critical packages..."
+pip install python-dotenv fastapi uvicorn loguru discord.py
+
+# Then install all requirements
+echo "Installing all requirements..."
 pip install -r polybot/requirements.txt
 
 # Set up environment variables
@@ -91,7 +98,19 @@ if ! systemctl is-active --quiet discord-bot.service; then
   cd "$(dirname "$0")"
   source venv/bin/activate
   python -c "import sys; print(f'Python version: {sys.version}')"
-  PYTHONPATH="." python -c "from polybot.app import main; print('App imported successfully')"
+  PYTHONPATH="." python -c "try:
+    from dotenv import load_dotenv
+    print('dotenv imported successfully')
+    import discord
+    print('discord imported successfully')
+    import fastapi
+    print('fastapi imported successfully')
+    import uvicorn
+    print('uvicorn imported successfully')
+    from polybot.app import main
+    print('App imported successfully')
+except Exception as e:
+    print(f'Error: {e}')"
   
   echo ""
   echo "The service failed to start. This might be because:"
