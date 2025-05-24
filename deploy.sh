@@ -5,6 +5,17 @@ set -e
 
 echo "Starting deployment of Discord bot..."
 
+# Install system dependencies
+echo "Installing system dependencies..."
+sudo apt-get update
+sudo apt-get install -y python3-venv python3-dev build-essential libssl-dev libffi-dev
+
+# Install python3-venv if not already installed
+if ! dpkg -l | grep -q python3-venv; then
+  echo "Installing python3-venv package..."
+  sudo apt-get install -y python3-venv
+fi
+
 # Create a Python virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
   echo "Creating virtual environment..."
@@ -17,6 +28,7 @@ source venv/bin/activate
 
 # Install dependencies
 echo "Installing dependencies..."
+pip install --upgrade pip
 pip install -r polybot/requirements.txt
 
 # Copy the systemd service file
