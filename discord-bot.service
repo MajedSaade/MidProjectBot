@@ -1,0 +1,14 @@
+[Unit]
+Description=Discord Image Processing Bot
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/MidProjectBot
+Environment="PATH=/home/ubuntu/MidProjectBot/venv/bin"
+ExecStart=/home/ubuntu/MidProjectBot/venv/bin/python -m polybot.app
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target 
