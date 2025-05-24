@@ -16,15 +16,33 @@ if ! dpkg -l | grep -q python3-venv; then
   sudo apt-get install -y python3-venv
 fi
 
+# Remove existing venv if activation fails
+if [ -d "venv" ] && [ ! -f "venv/bin/activate" ]; then
+  echo "Found incomplete virtual environment, removing it..."
+  rm -rf venv
+fi
+
 # Create a Python virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
   echo "Creating virtual environment..."
   python3 -m venv venv
+  
+  # Verify the virtual environment was created properly
+  if [ ! -f "venv/bin/activate" ]; then
+    echo "❌ Failed to create virtual environment properly."
+    exit 1
+  fi
 fi
 
 # Activate the virtual environment
 echo "Activating virtual environment..."
 source venv/bin/activate
+
+# Verify the virtual environment is activated
+if [ -z "$VIRTUAL_ENV" ]; then
+  echo "❌ Failed to activate virtual environment."
+  exit 1
+fi
 
 # Install dependencies
 echo "Installing dependencies..."
