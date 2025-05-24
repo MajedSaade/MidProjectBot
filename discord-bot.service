@@ -5,15 +5,12 @@ After=network.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu/MidProjectBot
-Environment="PATH=/home/ubuntu/MidProjectBot/venv/bin:/usr/local/bin:/usr/bin:/bin"
-EnvironmentFile=-/home/ubuntu/MidProjectBot/.env
-Environment="YOLO_URL=http://10.0.1.90:8081/predict"
-Environment="OLLAMA_URL=http://10.0.0.136:11434/api/chat"
-Environment="OLLAMA_MODEL=gemma3:1b"
-Environment="STATUS_SERVER_PORT=8443"
-ExecStart=/home/ubuntu/MidProjectBot/venv/bin/python /home/ubuntu/MidProjectBot/polybot/app.py
+# Use our wrapper script to start the bot
+ExecStart=/home/ubuntu/MidProjectBot/run_bot.sh
+
 Restart=always
 RestartSec=10
+# Add more logging
 StandardOutput=journal
 StandardError=journal
 
