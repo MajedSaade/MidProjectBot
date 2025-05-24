@@ -66,6 +66,12 @@ fi
 echo "Setting up systemd service..."
 sudo cp discord-bot.service /etc/systemd/system/
 
+# Test run the app directly to check for errors
+echo "Testing the app directly..."
+python -m polybot.app --test-run || {
+  echo "❌ The app failed to start when run directly. This might help identify the issue."
+}
+
 # Reload daemon and restart the service
 echo "Restarting service..."
 sudo systemctl daemon-reload
@@ -77,14 +83,21 @@ if ! systemctl is-active --quiet discord-bot.service; then
   echo "❌ discord-bot.service is not running."
   sudo systemctl status discord-bot.service --no-pager
   
-  echo "Checking logs for errors..."
-  journalctl -u discord-bot.service -n 50 --no-pager
+  echo "Checking detailed logs for errors..."
+  sudo journalctl -u discord-bot.service -n 100 --no-pager
+  
+  echo ""
+  echo "Trying to run the app directly to see the exact error:"
+  cd "$(dirname "$0")"
+  source venv/bin/activate
+  python -c "import sys; print(f'Python version: {sys.version}')"
+  PYTHONPATH="." python -c "from polybot.app import main; print('App imported successfully')"
   
   echo ""
   echo "The service failed to start. This might be because:"
-  echo "1. The DISCORD_BOT_TOKEN is not set in the service file"
-  echo "2. There are path issues in the service file"
-  echo "3. The bot code has errors"
+  echo "1. The DISCORD_BOT_TOKEN is missing or invalid in the .env file"
+  echo "2. There are Python package dependencies missing"
+  echo "3. There's a syntax error or import error in the bot code"
   echo ""
   echo "Please check the logs above for more details."
   

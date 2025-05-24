@@ -1,6 +1,7 @@
 import os
 import asyncio
 import threading
+import sys
 from dotenv import load_dotenv
 from polybot.bot import ImageProcessingBot
 from loguru import logger
@@ -37,10 +38,20 @@ def run_status_server():
 
 
 async def main():
+    # Check if we're in test run mode
+    test_run = "--test-run" in sys.argv
+    
+    if test_run:
+        logger.info("Running in test mode, will initialize and exit")
+    
     if not DISCORD_BOT_TOKEN:
         logger.error("DISCORD_BOT_TOKEN environment variable not set")
         return
-
+    
+    if test_run:
+        logger.info("Test run successful! Discord token is set and imports are working.")
+        return
+        
     # Start the status server in a separate thread
     status_thread = threading.Thread(target=run_status_server, daemon=True)
     status_thread.start()

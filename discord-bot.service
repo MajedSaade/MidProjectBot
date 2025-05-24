@@ -7,9 +7,11 @@ User=ubuntu
 WorkingDirectory=/home/ubuntu/MidProjectBot
 Environment="PATH=/home/ubuntu/MidProjectBot/venv/bin:/usr/local/bin:/usr/bin:/bin"
 EnvironmentFile=/home/ubuntu/MidProjectBot/.env
-ExecStart=/home/ubuntu/MidProjectBot/venv/bin/python -m polybot.app
+ExecStart=/home/ubuntu/MidProjectBot/venv/bin/python /home/ubuntu/MidProjectBot/polybot/app.py
 Restart=always
 RestartSec=10
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target 
