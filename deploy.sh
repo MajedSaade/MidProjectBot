@@ -59,31 +59,31 @@ pip install -r polybot/requirements.txt
 # Set up environment variables
 echo "Setting up environment variables..."
 
-# Check if .env exists and has DISCORD_BOT_TOKEN
-if [ ! -f ".env" ] || ! grep -q "DISCORD_BOT_TOKEN=" .env || [ "$(grep "DISCORD_BOT_TOKEN=" .env | cut -d= -f2)" = "" ]; then
-  echo "Creating or updating .env file..."
-  
-  # Prompt for Discord token if it's not set
-  DISCORD_TOKEN=${DISCORD_BOT_TOKEN:-""}
-  if [ -z "$DISCORD_TOKEN" ]; then
+# Create or update .env file with token from environment variable
+if [ -n "$DISCORD_BOT_TOKEN" ]; then
+  echo "Using Discord bot token from environment variable..."
+  echo "DISCORD_BOT_TOKEN=$DISCORD_BOT_TOKEN" > .env
+  echo "YOLO_URL=http://10.0.1.90:8081/predict" >> .env
+  echo "OLLAMA_URL=http://10.0.0.136:11434/api/chat" >> .env
+  echo "OLLAMA_MODEL=gemma3:1b" >> .env
+  echo "STATUS_SERVER_PORT=8443" >> .env
+else
+  # Check if .env exists and has DISCORD_BOT_TOKEN
+  if [ ! -f ".env" ] || ! grep -q "DISCORD_BOT_TOKEN=" .env || [ "$(grep "DISCORD_BOT_TOKEN=" .env | cut -d= -f2)" = "" ]; then
     echo "❌ ERROR: DISCORD_BOT_TOKEN is not set!"
     echo "Please make sure to either:"
     echo "1. Set it in your .env file manually"
     echo "2. Pass it as an environment variable when running this script"
     echo "3. Add it to your GitHub repository secrets"
     
-    # Create the .env file with a placeholder for the token
+    # Create a default .env file
     echo "Creating .env file with empty token (you'll need to fill this in)..."
-  fi
-  
-  # Create .env file
-  echo "DISCORD_BOT_TOKEN=$DISCORD_TOKEN" > .env
-  echo "YOLO_URL=http://10.0.1.90:8081/predict" >> .env
-  echo "OLLAMA_URL=http://10.0.0.136:11434/api/chat" >> .env
-  echo "OLLAMA_MODEL=gemma3:1b" >> .env
-  echo "STATUS_SERVER_PORT=8443" >> .env
-  
-  if [ -z "$DISCORD_TOKEN" ]; then
+    echo "DISCORD_BOT_TOKEN=" > .env
+    echo "YOLO_URL=http://10.0.1.90:8081/predict" >> .env
+    echo "OLLAMA_URL=http://10.0.0.136:11434/api/chat" >> .env
+    echo "OLLAMA_MODEL=gemma3:1b" >> .env
+    echo "STATUS_SERVER_PORT=8443" >> .env
+    
     echo "⚠️ WARNING: You need to edit the .env file and add your Discord bot token"
     echo "The bot will not work until you do this and restart the service."
   fi
@@ -91,7 +91,7 @@ fi
 
 # Display current environment settings
 echo "Current environment variables:"
-echo "DISCORD_BOT_TOKEN: $(if grep -q "DISCORD_BOT_TOKEN=" .env; then echo "is set"; else echo "not set"; fi)"
+echo "DISCORD_BOT_TOKEN: $(if grep -q "DISCORD_BOT_TOKEN=" .env && [ "$(grep "DISCORD_BOT_TOKEN=" .env | cut -d= -f2)" != "" ]; then echo "is set"; else echo "not set"; fi)"
 echo "YOLO_URL: $(grep "YOLO_URL=" .env | cut -d= -f2)"
 echo "OLLAMA_URL: $(grep "OLLAMA_URL=" .env | cut -d= -f2)"
 
@@ -104,7 +104,7 @@ sudo cp discord-bot.service /etc/systemd/system/
 
 # Test run the app directly to check for errors
 echo "Testing the app directly..."
-DISCORD_BOT_TOKEN=$(grep "DISCORD_BOT_TOKEN=" .env | cut -d= -f2) python -m polybot.app --test-run || {
+python -m polybot.app --test-run || {
   echo "❌ The app failed to start when run directly. This might help identify the issue."
 }
 

@@ -44,9 +44,20 @@ async def main():
     if test_run:
         logger.info("Running in test mode, will initialize and exit")
     
+    # Check for Discord token
     if not DISCORD_BOT_TOKEN:
         logger.error("DISCORD_BOT_TOKEN environment variable not set")
-        return
+        logger.error("Please set your Discord bot token in the .env file")
+        logger.error("You can use the set_token.sh script: ./set_token.sh YOUR_TOKEN")
+        
+        # Print environment variables for debugging
+        logger.debug(f"Environment variables:")
+        for key, value in os.environ.items():
+            if key.startswith("DISCORD") or key.startswith("YOLO") or key.startswith("OLLAMA"):
+                logger.debug(f"{key}: {'[SET]' if value else '[NOT SET]'}")
+        
+        # Exit with error
+        sys.exit(1)
     
     if test_run:
         logger.info("Test run successful! Discord token is set and imports are working.")

@@ -52,6 +52,9 @@ jobs:
           # Clone repository if it doesn't exist, otherwise pull latest changes
           ssh ec2 "if [ -d ~/${REPO_NAME} ]; then cd ~/${REPO_NAME} && git pull; else git clone ${REPO_URL} ~/${REPO_NAME}; fi"
           
-      - name: Execute script on EC2
+      - name: Execute deployment script
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
         run: |
-          ssh ec2 "cd $REPO_NAME && bash deploy.sh" 
+          # Pass the Discord token directly to the deployment script
+          ssh ec2 "cd $REPO_NAME && DISCORD_BOT_TOKEN=\"$DISCORD_BOT_TOKEN\" bash deploy.sh" 
