@@ -38,7 +38,7 @@ fi
 
 # Try running the app directly
 echo ""
-echo "Trying to run the app directly..."
+echo "Trying to run the app directly as a module..."
 source venv/bin/activate
 python -c "
 from dotenv import load_dotenv
@@ -57,6 +57,17 @@ print(f'OLLAMA_URL: {os.environ.get(\"OLLAMA_URL\", \"Not set\")}')
 print(f'Working directory: {os.getcwd()}')
 "
 
+# Try running the module directly
+echo ""
+echo "Testing the module import:"
+python -c "
+try:
+    import polybot.app
+    print('✓ Successfully imported polybot.app module')
+except Exception as e:
+    print(f'✗ Failed to import polybot.app module: {e}')
+"
+
 # Check service logs
 echo ""
 echo "Recent service logs:"
@@ -67,7 +78,8 @@ echo "==========================================="
 echo "Suggested fixes:"
 echo ""
 echo "1. Make sure the .env file has the correct Discord bot token"
-echo "2. Run 'sudo systemctl daemon-reload' after changing the service file"
-echo "3. Try manually running the bot with './debug_bot.sh'"
+echo "2. Ensure the Python module structure is correct"
+echo "3. Run 'sudo systemctl daemon-reload' after changing the service file"
 echo "4. Check that all dependencies are installed with 'pip list'"
+echo "5. Check the Python path with 'python -c \"import sys; print(sys.path)\"'"
 echo "===========================================" 
