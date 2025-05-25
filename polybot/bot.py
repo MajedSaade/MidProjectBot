@@ -285,6 +285,7 @@ class Bot:
                 "• `!detect` - Detect objects in an image using YOLO\n"
                 "• `!concat [horizontal|vertical]` - Join two images\n"
                 "• `!ask [question]` - Ask the AI a question using Ollama\n\n"
+                "• `!songrec` - Get personalized song recommendations\n"
                 "For commands except `!concat` and `!ask`, attach an image to your message.\n"
                 "For `!concat`, the bot will use the two most recent images in the channel.\n\n"
                 "You can also just chat with me! I respond to greetings, questions about how I'm doing, jokes, and more!"
