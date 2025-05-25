@@ -283,7 +283,7 @@ class Bot:
                 "• `!segment` - Convert image to black & white\n"
                 "• `!detect` - Detect objects in an image using YOLO\n"
                 "• `!concat [horizontal|vertical]` - Join two images\n"
-                "• `!spotify [track|artist|album|playlist] search_query` - Search for music on Spotify\n"
+                "• `!spotify [track|artist|album|playlist] search_query` - Search for music on Spotify!\n"
                 "• `!songrec` - Get personalized song recommendations\n"
                 "• `!ask [question]` - Ask the AI a question using Ollama\n\n"
                 "For commands except `!concat`, `!spotify`, `!songrec` and `!ask`, attach an image to your message.\n"
