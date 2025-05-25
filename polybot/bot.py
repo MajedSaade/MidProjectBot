@@ -275,6 +275,14 @@ class Bot:
         # HELP COMMANDS
         if re.search(r"help|commands|what can you do|how (do|to) (use|work)|(show|list) commands", content):
             help_message = (
+                "**📷 Image Processing Bot - Commands:**\n\n"
+                "• `!blur [level]` - Blur an image\n"
+                "• `!contour` - Detect edges in an image\n"
+                "• `!rotate` - Rotate an image 90° clockwise\n"
+                "• `!salt_pepper` - Add noise to an image\n"
+                "• `!segment` - Convert image to black & white\n"
+                "• `!detect` - Detect objects in an image using YOLO\n"
+                "• `!concat [horizontal|vertical]` - Join two images\n"
                 "• `!spotify [track|artist|album|playlist] search_query` - Search for music on Spotify\n"
                 "• `!songrec` - Get personalized song recommendations\n"
                 "• `!ask [question]` - Ask the AI a question using Ollama\n\n"
