@@ -119,12 +119,16 @@ class Bot:
         ]
         if any(re.search(pattern, content) for pattern in how_are_you_patterns):
             feeling_responses = [
-                f"All tuned up and ready to recommend some great music! What kind of vibe are you in today?",
-                f"I'm at your service and excited to suggest some songs! What's your mood like?",
-                f"I'm having a great time curating playlists! How are you feeling today?",
-                f"I'm fantastic! Always happy to help you find your next favorite track!",
-                f"Never been better! I love matching songs to moods. How's your day going?",
-                f"I'm all ears and ready to share some awesome music recs! Want to give it a try?"
+                f"I'm doing great, {username}! Ready to process some images for you! 📸",
+                f"I'm functioning perfectly! How can I help with your images today?",
+                f"All systems operational! What images would you like to work with today?",
+                f"I'm at your service and ready to help with image processing! How about you?",
+                f"I'm having a wonderful day processing images! How are you?",
+                f"I'm excellent! Always happy when I get to help with creative projects!",
+                f"Never better! I love helping with image transformations. How are you doing?",
+                f"I'm fantastic! Ready to apply some amazing effects to your images!",
+                f"I'm doing well, thanks for asking! I'm excited to see what we'll create today!",
+                f"I'm great! Each day brings new images and creative possibilities!"
             ]
             await message.channel.send(random.choice(feeling_responses))
             return
@@ -137,11 +141,14 @@ class Bot:
         ]
         if any(re.search(pattern, content) for pattern in feeling_good_patterns):
             positive_responses = [
-                f"Excellent! That upbeat mood is perfect for discovering some great tunes!",
-                f"Wonderful! Let’s ride that good vibe into some awesome music recommendations!",
-                f"Fantastic! I’ve got just the tracks to make your day even better!",
-                f"That’s what I like to hear! Let’s keep that energy going with some amazing songs!",
-                f"Brilliant! Your mood’s contagious — ready to explore some fresh sounds?",
+                f"That's great to hear, {username}! Ready to work on some images together?",
+                f"Awesome! Glad you're doing well. What can I help you with today?",
+                f"Excellent! That positive energy will make our image processing even better!",
+                f"Wonderful! Let's channel that good mood into some creative image work!",
+                f"Fantastic! Let's make your day even better with some cool image effects!",
+                f"That's what I like to hear! Let's keep that positive vibe going with some fun image processing!",
+                f"Brilliant! Your good mood is contagious! What shall we create today?",
+                f"Happy to hear that! Good moods and creativity go hand in hand!"
             ]
             await message.channel.send(random.choice(positive_responses))
             return
@@ -238,8 +245,10 @@ class Bot:
                 "Thank you! I try my best to be helpful! 😊",
                 "That's very kind of you to say!",
                 "I appreciate the compliment! It's my pleasure to assist with your images.",
+                "Thanks! I'm always trying to improve my image processing skills!",
                 "You're too kind! I'm glad I can be of service.",
                 "Thank you for the positive feedback! It means a lot!",
+                "You just made my day! I love helping with image processing."
             ]
             await message.channel.send(random.choice(compliment_responses))
             return
@@ -267,6 +276,14 @@ class Bot:
         # HELP COMMANDS
         if re.search(r"help|commands|what can you do|how (do|to) (use|work)|(show|list) commands", content):
             help_message = (
+                "**📷 Image Processing Bot - Commands:**\n\n"
+                "• `!blur [level]` - Blur an image\n"
+                "• `!contour` - Detect edges in an image\n"
+                "• `!rotate` - Rotate an image 90° clockwise\n"
+                "• `!salt_pepper` - Add noise to an image\n"
+                "• `!segment` - Convert image to black & white\n"
+                "• `!detect` - Detect objects in an image using YOLO\n"
+                "• `!concat [horizontal|vertical]` - Join two images\n"
                 "• `!ask [question]` - Ask the AI a question using Ollama\n\n"
                 "• `!songrec` - Get personalized song recommendations based on your answers!\n\n"
                 "For commands except `!concat` and `!ask`, attach an image to your message.\n"
@@ -280,6 +297,8 @@ class Bot:
         if re.search(r"about|who are you|what are you|tell me about yourself", content):
             about_message = (
                 "I'm an Image Processing Bot! 🤖\n\n"
+                "I can help you apply various effects and transformations to your images. "
+                "Upload an image with one of my commands, and I'll process it for you.\n\n"
                 "I can also detect objects in your images using the YOLO model!\n\n"
                 "With my Ollama integration, I can answer questions using AI models!\n\n"
                 "I can also chat with you about your day, tell jokes, and "
@@ -313,11 +332,11 @@ class Bot:
 
         # DEFAULT RESPONSE
         default_responses = [
-            f"Looking for some music? Try one of my song recommendation commands! Type 'help' to get started.",
-            f"Not sure I caught that — but I can suggest a song if you're interested! Just type 'help' to explore options."
-            f"Have a question? I'm here to help! Try asking me anything or type 'help' to see what I can do.",
-            f"Sorry, I didn’t get that. If you need assistance or have a question, feel free to ask or type 'help'!"
-
+            f"I'm not sure how to respond to that. Would you like to try processing an image?",
+            f"Interesting! If you'd like to process an image, just use one of my commands like !blur or !rotate.",
+            f"I'm here primarily to help with image processing. Type 'help' to see what I can do!",
+            f"Would you like to try one of my image processing commands? Type 'help' to see the options.",
+            f"I'm not quite sure what you mean. I'd be happy to help process an image if you'd like!"
         ]
         await message.channel.send(random.choice(default_responses))
 
