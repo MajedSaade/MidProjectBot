@@ -87,10 +87,6 @@ class Bot:
     async def handle_message(self, message):
         """Bot Main message handler with expanded conversational abilities"""
         logger.info(f'Incoming message: {message.content}')
-        # Skip default responses if user is in an active song recommendation flow
-        if hasattr(self, 'active_song_rec_sessions') and message.author.id in self.active_song_rec_sessions:
-            return
-            
         # Convert message to lowercase for easier matching
         content = message.content.lower()
         username = message.author.name
@@ -101,7 +97,16 @@ class Bot:
                      "good afternoon", "good evening", "what's up", "wassup"]
         if any(content == greeting for greeting in greetings):
             greeting_responses = [
-
+                f"Hello {username}! How can I help you today? 👋",
+                f"Hi there, {username}! Ready for some image processing? 📸",
+                f"Hey {username}! Great to see you! What can I help with?",
+                f"Greetings, {username}! How may I assist you today?",
+                f"Hello! I'm here and ready to help with your images! 🖼️",
+                f"Hey there! Ready when you are. What shall we create today?",
+                f"Hi {username}! Looking forward to seeing what images we'll work with today!",
+                f"Hello {username}! Got any cool images to transform today?",
+                f"Hey! Welcome! I'm all set to help with your image editing needs.",
+                f"Greetings! Hope you're having a fantastic day! Ready to work with some images?"
             ]
             await message.channel.send(random.choice(greeting_responses))
             return
@@ -327,7 +332,11 @@ class Bot:
 
         # DEFAULT RESPONSE
         default_responses = [
-            f"Would you like to try one of my image processing commands? Type 'help' to see the options."
+            f"I'm not sure how to respond to that. Would you like to try processing an image?",
+            f"Interesting! If you'd like to process an image, just use one of my commands like !blur or !rotate.",
+            f"I'm here primarily to help with image processing. Type 'help' to see what I can do!",
+            f"Would you like to try one of my image processing commands? Type 'help' to see the options.",
+            f"I'm not quite sure what you mean. I'd be happy to help process an image if you'd like!"
         ]
         await message.channel.send(random.choice(default_responses))
 
@@ -352,9 +361,6 @@ class ImageProcessingBot(Bot):
         self.ollama_model = os.environ.get('OLLAMA_MODEL', 'gemma3:1b')
         logger.info(f"Ollama service URL set to: {self.ollama_url}")
         logger.info(f"Ollama model set to: {self.ollama_model}")
-        
-        # Track active song recommendation sessions by user ID
-        self.active_song_rec_sessions = set()
 
         # Register commands
         @self.client.command(name='blur')
@@ -616,9 +622,6 @@ class ImageProcessingBot(Bot):
 
     async def song_recommendation_flow(self, ctx):
         """Interactive flow to get song recommendations based on user preferences"""
-        # Add user to active sessions to prevent default responses
-        self.active_song_rec_sessions.add(ctx.author.id)
-        
         # Let the user know we're starting the recommendation flow
         await ctx.send(
             "🎵 Welcome to Song Recommendations! I'll ask you a few questions to find the perfect songs for you.")
@@ -642,24 +645,22 @@ class ImageProcessingBot(Bot):
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel
 
-        try:
-            # Ask each question and wait for response
-            for q in questions:
-                await ctx.send(q["question"])
-                try:
-                    # Wait for user response with a timeout of 60 seconds
-                    response = await self.client.wait_for('message', check=check, timeout=60)
-                    preferences[q["key"]] = response.content
-                except asyncio.TimeoutError:
-                    await ctx.send("You took too long to respond. Song recommendation cancelled.")
-                    self.active_song_rec_sessions.remove(ctx.author.id)  # Remove from active sessions
-                    return
+        # Ask each question and wait for response
+        for q in questions:
+            await ctx.send(q["question"])
+            try:
+                # Wait for user response with a timeout of 60 seconds
+                response = await self.client.wait_for('message', check=check, timeout=60)
+                preferences[q["key"]] = response.content
+            except asyncio.TimeoutError:
+                await ctx.send("You took too long to respond. Song recommendation cancelled.")
+                return
 
-            # Confirmation message
-            await ctx.send("Thanks for your preferences! Searching for song recommendations now... 🔍")
+        # Confirmation message
+        await ctx.send("Thanks for your preferences! Searching for song recommendations now... 🔍")
 
-            # Create a prompt for Ollama
-            prompt = f"""Based on the following preferences, recommend the top 5 songs:
+        # Create a prompt for Ollama
+        prompt = f"""Based on the following preferences, recommend the top 5 songs:
 - Language: {preferences['language']}
 - Genre: {preferences['genre']}
 - Mood: {preferences['mood']}
@@ -690,12 +691,8 @@ YouTube Link: https://www.youtube.com/watch?v=dQw4w9WgXcQ
 Description: This upbeat track perfectly captures the happy mood with its catchy melody and energetic performance.
 """
 
-            # Send the request to Ollama
-            await self.get_song_recommendations(ctx, prompt, preferences)
-        finally:
-            # Make sure to remove the user from active sessions even if there's an error
-            if ctx.author.id in self.active_song_rec_sessions:
-                self.active_song_rec_sessions.remove(ctx.author.id)
+        # Send the request to Ollama
+        await self.get_song_recommendations(ctx, prompt, preferences)
 
     async def get_song_recommendations(self, ctx, prompt, preferences):
         """Get song recommendations from Ollama based on user preferences"""
