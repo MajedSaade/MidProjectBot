@@ -97,16 +97,7 @@ class Bot:
                      "good afternoon", "good evening", "what's up", "wassup"]
         if any(content == greeting for greeting in greetings):
             greeting_responses = [
-                f"Hello {username}! How can I help you today? 👋",
-                f"Hi there, {username}! Ready for some image processing? 📸",
-                f"Hey {username}! Great to see you! What can I help with?",
-                f"Greetings, {username}! How may I assist you today?",
-                f"Hello! I'm here and ready to help with your images! 🖼️",
-                f"Hey there! Ready when you are. What shall we create today?",
-                f"Hi {username}! Looking forward to seeing what images we'll work with today!",
-                f"Hello {username}! Got any cool images to transform today?",
-                f"Hey! Welcome! I'm all set to help with your image editing needs.",
-                f"Greetings! Hope you're having a fantastic day! Ready to work with some images?"
+
             ]
             await message.channel.send(random.choice(greeting_responses))
             return
