@@ -323,11 +323,6 @@ class Bot:
 
         # DEFAULT RESPONSE
         default_responses = [
-            f"I'm not sure how to respond to that. Would you like to try processing an image?",
-            f"Interesting! If you'd like to process an image, just use one of my commands like !blur or !rotate.",
-            f"I'm here primarily to help with image processing. Type 'help' to see what I can do!",
-            f"Would you like to try one of my image processing commands? Type 'help' to see the options.",
-            f"I'm not quite sure what you mean. I'd be happy to help process an image if you'd like!"
         ]
         await message.channel.send(random.choice(default_responses))
 
